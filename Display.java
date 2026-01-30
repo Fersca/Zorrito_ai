@@ -87,6 +87,9 @@ public class Display extends Frame {
         add(this.canvas);
         setVisible(true);
 
+        // Asegura que el Frame tenga el foco para recibir eventos de teclado
+        requestFocus();
+
         // Setea el ícono de la ventana
         setIconImage(Toolkit.getDefaultToolkit().getImage("zorro.png"));
 
@@ -101,8 +104,8 @@ public class Display extends Frame {
 
         this.juego = juego;
 
-        // Listener para las teclas de movimiento y acciones
-        addKeyListener(new KeyAdapter() {
+        // Crea el KeyAdapter una sola vez para reutilizarlo
+        KeyAdapter keyHandler = new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 juego.pressedKeys.add(e.getKeyCode());
@@ -113,7 +116,13 @@ public class Display extends Frame {
             public void keyReleased(KeyEvent e) {
                 juego.pressedKeys.remove(e.getKeyCode());
             }
-        });
+        };
+
+        // Agrega el listener al Frame y al Canvas para asegurar que funcione
+        addKeyListener(keyHandler);
+        this.canvas.addKeyListener(keyHandler);
+        this.canvas.setFocusable(true);
+        this.canvas.requestFocus();
 
         // Listener para cerrar la ventana
         addWindowListener(new WindowAdapter() {
