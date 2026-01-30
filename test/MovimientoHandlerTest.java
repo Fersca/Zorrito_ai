@@ -41,7 +41,7 @@ class MovimientoHandlerTest {
         @DisplayName("No modifica la posición del personaje")
         void noModificaPosicion() {
             // Dado un personaje con posición definida
-            Character c = new Character("Test", "bosque.png", 1, TipoMovimiento.NULO);
+            Character c = new Character("Test", "assets/bosque.png", 1, TipoMovimiento.NULO);
             c.x = 100;
             c.y = 200;
 
@@ -61,7 +61,7 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Mueve hacia la derecha cuando avanza en esa dirección")
         void mueveHaciaDerecha() {
-            Character c = new Character("Pajaro", "pajaro.png", 20, TipoMovimiento.REBOTE);
+            Character c = new Character("Pajaro", "assets/pajaro.png", 20, TipoMovimiento.REBOTE);
             c.x = 100;
             c.velocidadX = 5;
             c.avanzando_x = Direccion.Derecha;
@@ -75,7 +75,7 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Mueve hacia la izquierda cuando avanza en esa dirección")
         void mueveHaciaIzquierda() {
-            Character c = new Character("Pajaro", "pajaro.png", 20, TipoMovimiento.REBOTE);
+            Character c = new Character("Pajaro", "assets/pajaro.png", 20, TipoMovimiento.REBOTE);
             c.x = 100;
             c.velocidadX = 5;
             c.avanzando_x = Direccion.Izquierda;
@@ -89,7 +89,7 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Rebota en el borde derecho")
         void rebotaBordeDerecho() {
-            Character c = new Character("Pajaro", "pajaro.png", 20, TipoMovimiento.REBOTE);
+            Character c = new Character("Pajaro", "assets/pajaro.png", 20, TipoMovimiento.REBOTE);
             c.centroX = 850;
             c.avanzando_x = Direccion.Derecha;
 
@@ -101,7 +101,7 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Rebota en el borde izquierdo")
         void rebotaBordeIzquierdo() {
-            Character c = new Character("Pajaro", "pajaro.png", 20, TipoMovimiento.REBOTE);
+            Character c = new Character("Pajaro", "assets/pajaro.png", 20, TipoMovimiento.REBOTE);
             c.centroX = -10;
             c.avanzando_x = Direccion.Izquierda;
 
@@ -113,7 +113,7 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Si colisionado, va a la jaula")
         void colisionadoVaAJaula() {
-            Character c = new Character("Pajaro", "pajaro.png", 20, TipoMovimiento.REBOTE);
+            Character c = new Character("Pajaro", "assets/pajaro.png", 20, TipoMovimiento.REBOTE);
             c.x = 500;
             c.y = 500;
             c.colisionado = true;
@@ -132,7 +132,7 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Actualiza el ángulo de movimiento")
         void actualizaAngulo() {
-            Character c = new Character("Pajaro", "pajaro.png", 20, TipoMovimiento.ARCO);
+            Character c = new Character("Pajaro", "assets/pajaro.png", 20, TipoMovimiento.ARCO);
             c.anguloMovimiento = 0;
             c.velocidadAngular = 0.1;
 
@@ -144,7 +144,7 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Si colisionado, va a la jaula")
         void colisionadoVaAJaula() {
-            Character c = new Character("Pajaro", "pajaro.png", 20, TipoMovimiento.ARCO);
+            Character c = new Character("Pajaro", "assets/pajaro.png", 20, TipoMovimiento.ARCO);
             c.x = 500;
             c.y = 500;
             c.colisionado = true;
@@ -163,7 +163,7 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Incrementa el contador de cambio")
         void incrementaContador() {
-            Character c = new Character("Pajaro", "pajaro.png", 20, TipoMovimiento.ALEATORIO);
+            Character c = new Character("Pajaro", "assets/pajaro.png", 20, TipoMovimiento.ALEATORIO);
             c.contadorCambio = 5;
             c.frecuenciaCambio = 100;
 
@@ -175,7 +175,7 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Reinicia contador cuando alcanza frecuencia")
         void reiniciaContadorEnFrecuencia() {
-            Character c = new Character("Pajaro", "pajaro.png", 20, TipoMovimiento.ALEATORIO);
+            Character c = new Character("Pajaro", "assets/pajaro.png", 20, TipoMovimiento.ALEATORIO);
             c.contadorCambio = 49;
             c.frecuenciaCambio = 50;
 
@@ -187,7 +187,7 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Si colisionado, va a la jaula")
         void colisionadoVaAJaula() {
-            Character c = new Character("Pajaro", "pajaro.png", 20, TipoMovimiento.ALEATORIO);
+            Character c = new Character("Pajaro", "assets/pajaro.png", 20, TipoMovimiento.ALEATORIO);
             c.x = 500;
             c.y = 500;
             c.colisionado = true;
@@ -206,8 +206,8 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Se mueve hacia la presa a la derecha")
         void seMueveHaciaDerecha() {
-            Character cazador = new Character("Aguila", "aguila.png", 7, TipoMovimiento.CAZAR);
-            Character presa = new Character("Zorrito", "sprites.png", 10, TipoMovimiento.NULO);
+            Character cazador = new Character("Aguila", "assets/aguila.png", 7, TipoMovimiento.CAZAR);
+            Character presa = new Character("Zorrito", "assets/sprites.png", 10, TipoMovimiento.NULO);
 
             cazador.x = 100;
             cazador.y = 100;
@@ -226,8 +226,8 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Se mueve hacia la presa a la izquierda")
         void seMueveHaciaIzquierda() {
-            Character cazador = new Character("Aguila", "aguila.png", 7, TipoMovimiento.CAZAR);
-            Character presa = new Character("Zorrito", "sprites.png", 10, TipoMovimiento.NULO);
+            Character cazador = new Character("Aguila", "assets/aguila.png", 7, TipoMovimiento.CAZAR);
+            Character presa = new Character("Zorrito", "assets/sprites.png", 10, TipoMovimiento.NULO);
 
             cazador.x = 200;
             cazador.y = 100;
@@ -246,8 +246,8 @@ class MovimientoHandlerTest {
         @Test
         @DisplayName("Marca presa como cazada si colisiona")
         void marcaPresaCazada() {
-            Character cazador = new Character("Aguila", "aguila.png", 7, TipoMovimiento.CAZAR);
-            Character presa = new Character("Zorrito", "sprites.png", 10, TipoMovimiento.NULO);
+            Character cazador = new Character("Aguila", "assets/aguila.png", 7, TipoMovimiento.CAZAR);
+            Character presa = new Character("Zorrito", "assets/sprites.png", 10, TipoMovimiento.NULO);
 
             cazador.colisionado = true;
             cazador.follow = presa;

@@ -63,7 +63,7 @@ echo -e "${YELLOW}Compilando código fuente...${NC}"
 
 # Compilar el código fuente principal con información de debug para coverage
 # Usamos --release 21 para compatibilidad con JaCoCo (que aún no soporta Java 25)
-if ! javac -g --release 21 -d "$BUILD_DIR" "$PROJECT_DIR"/*.java 2>&1; then
+if ! javac -g --release 21 -d "$BUILD_DIR" "$PROJECT_DIR"/src/*.java 2>&1; then
     echo -e "${RED}Error compilando código fuente${NC}"
     exit 1
 fi
@@ -121,7 +121,7 @@ if [ -f "$COVERAGE_DIR/jacoco.exec" ]; then
         --classfiles "$BUILD_DIR/MovementUtils\$DireccionResultado.class" \
         --classfiles "$BUILD_DIR/SpriteUtils.class" \
         --classfiles "$BUILD_DIR/SpriteUtils\$SpriteRegion.class" \
-        --sourcefiles "$PROJECT_DIR" \
+        --sourcefiles "$PROJECT_DIR/src" \
         --csv "$COVERAGE_DIR/coverage.csv" \
         2>/dev/null
 
@@ -132,7 +132,7 @@ if [ -f "$COVERAGE_DIR/jacoco.exec" ]; then
         --classfiles "$BUILD_DIR/MovementUtils\$DireccionResultado.class" \
         --classfiles "$BUILD_DIR/SpriteUtils.class" \
         --classfiles "$BUILD_DIR/SpriteUtils\$SpriteRegion.class" \
-        --sourcefiles "$PROJECT_DIR" \
+        --sourcefiles "$PROJECT_DIR/src" \
         --html "$COVERAGE_DIR/html" \
         2>/dev/null
 

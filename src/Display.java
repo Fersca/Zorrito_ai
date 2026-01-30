@@ -91,7 +91,7 @@ public class Display extends Frame {
         requestFocus();
 
         // Setea el ícono de la ventana
-        setIconImage(Toolkit.getDefaultToolkit().getImage("zorro.png"));
+        setIconImage(Toolkit.getDefaultToolkit().getImage("assets/zorro.png"));
 
         // Espera a que se maximize la pantalla
         if (!juego.sinFondo){

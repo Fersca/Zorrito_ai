@@ -16,7 +16,7 @@ class CharacterTest {
     @BeforeEach
     void setUp() {
         // Crea un personaje con imagen existente para los tests
-        personaje = new Character("TestChar", "bosque.png", 1, TipoMovimiento.NULO);
+        personaje = new Character("TestChar", "assets/bosque.png", 1, TipoMovimiento.NULO);
     }
 
     @Nested
@@ -26,14 +26,14 @@ class CharacterTest {
         @Test
         @DisplayName("Constructor asigna nombre correctamente")
         void constructorAsignaNombre() {
-            Character c = new Character("MiPersonaje", "bosque.png", 1, TipoMovimiento.REBOTE);
+            Character c = new Character("MiPersonaje", "assets/bosque.png", 1, TipoMovimiento.REBOTE);
             assertEquals("MiPersonaje", c.name);
         }
 
         @Test
         @DisplayName("Constructor asigna tipo de movimiento")
         void constructorAsignaTipoMovimiento() {
-            Character c = new Character("Test", "bosque.png", 1, TipoMovimiento.CAZAR);
+            Character c = new Character("Test", "assets/bosque.png", 1, TipoMovimiento.CAZAR);
             assertEquals(TipoMovimiento.CAZAR, c.tipoMovimientoEnum);
         }
 
@@ -109,8 +109,8 @@ class CharacterTest {
         @Test
         @DisplayName("Detecta colisión cuando círculos se superponen")
         void detectaColision() {
-            Character c1 = new Character("A", "bosque.png", 1, TipoMovimiento.NULO);
-            Character c2 = new Character("B", "bosque.png", 1, TipoMovimiento.NULO);
+            Character c1 = new Character("A", "assets/bosque.png", 1, TipoMovimiento.NULO);
+            Character c2 = new Character("B", "assets/bosque.png", 1, TipoMovimiento.NULO);
 
             c1.centroX = 100;
             c1.centroY = 100;
@@ -126,8 +126,8 @@ class CharacterTest {
         @Test
         @DisplayName("No detecta colisión cuando círculos están separados")
         void noDetectaColisionSeparados() {
-            Character c1 = new Character("A", "bosque.png", 1, TipoMovimiento.NULO);
-            Character c2 = new Character("B", "bosque.png", 1, TipoMovimiento.NULO);
+            Character c1 = new Character("A", "assets/bosque.png", 1, TipoMovimiento.NULO);
+            Character c2 = new Character("B", "assets/bosque.png", 1, TipoMovimiento.NULO);
 
             c1.centroX = 0;
             c1.centroY = 0;
@@ -143,8 +143,8 @@ class CharacterTest {
         @Test
         @DisplayName("No colisiona si el otro tiene colisiona=false")
         void noColisionaSiDeshabilitado() {
-            Character c1 = new Character("A", "bosque.png", 1, TipoMovimiento.NULO);
-            Character c2 = new Character("B", "bosque.png", 1, TipoMovimiento.NULO);
+            Character c1 = new Character("A", "assets/bosque.png", 1, TipoMovimiento.NULO);
+            Character c2 = new Character("B", "assets/bosque.png", 1, TipoMovimiento.NULO);
 
             c1.centroX = 100;
             c1.centroY = 100;
@@ -267,7 +267,7 @@ class CharacterTest {
         @Test
         @DisplayName("Puede asignar personaje a seguir")
         void puedeAsignarFollow() {
-            Character presa = new Character("Zorrito", "bosque.png", 1, TipoMovimiento.NULO);
+            Character presa = new Character("Zorrito", "assets/bosque.png", 1, TipoMovimiento.NULO);
             personaje.follow = presa;
 
             assertNotNull(personaje.follow);

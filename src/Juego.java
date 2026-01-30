@@ -118,7 +118,7 @@ public class Juego {
         ArrayList<Character> personajesCreados = new ArrayList<Character>();
 
         // Crea al zorrito (personaje principal) con movimiento nulo
-        Character zorrito = new Character("Zorrito", "sprites.png", 10, TipoMovimiento.NULO);
+        Character zorrito = new Character("Zorrito", "assets/sprites.png", 10, TipoMovimiento.NULO);
 
         // Configura los sprites de animación
         zorrito.hasSprites = true;
@@ -136,10 +136,10 @@ public class Juego {
 
         zorrito.x = display.getWidth() / 2;
         zorrito.y = display.getHeight() / 2;
-        zorrito.setImagenColision("zorro_muerto.png");
+        zorrito.setImagenColision("assets/zorro_muerto.png");
 
         // Crea la jaula (objetivo) con movimiento nulo
-        Character jaula = new Character("Jaula", "jaula.png", 5, TipoMovimiento.NULO);
+        Character jaula = new Character("Jaula", "assets/jaula.png", 5, TipoMovimiento.NULO);
         jaula.x = jaulaX;
         jaula.y = jaulaY;
         jaula.colisiona = false;
@@ -147,9 +147,9 @@ public class Juego {
         // Crea el fondo del mapa con movimiento nulo
         Character bosque;
         if (sinFondo){
-            bosque = new Character("Bosque", "screenshot.png", 1, TipoMovimiento.NULO);
+            bosque = new Character("Bosque", "assets/screenshot.png", 1, TipoMovimiento.NULO);
         } else {
-            bosque = new Character("Bosque", "bosque.png", 1, TipoMovimiento.NULO);
+            bosque = new Character("Bosque", "assets/bosque.png", 1, TipoMovimiento.NULO);
         }
 
         bosque.x = 0;
@@ -163,7 +163,7 @@ public class Juego {
         personajesCreados.add(bosque);
 
         // Crea el águila principal con movimiento de caza
-        Character aguila = new Character("Aguila", "aguila.png", 7, TipoMovimiento.CAZAR);
+        Character aguila = new Character("Aguila", "assets/aguila.png", 7, TipoMovimiento.CAZAR);
         aguila.x = display.getWidth();
         aguila.y = 0;
         aguila.velocidadX = 2;
@@ -173,7 +173,7 @@ public class Juego {
         // Crea águilas adicionales con movimiento de caza
         Random random = new Random();
         for (int i = 0; i < cantidadAguilas; i++){
-            Character enemy = new Character("Aguila" + i, "aguila.png", 7, TipoMovimiento.CAZAR);
+            Character enemy = new Character("Aguila" + i, "assets/aguila.png", 7, TipoMovimiento.CAZAR);
             enemy.x = random.nextInt(display.getWidth());
             enemy.y = random.nextInt(display.getHeight());
             enemy.velocidadX = 2;
@@ -218,7 +218,7 @@ public class Juego {
             TipoMovimiento tipo = tiposMovimiento[tipoMov];
 
             // Crea el pájaro con el tipo de movimiento seleccionado
-            Character pajaro = new Character("Pajaro" + i, "pajaro.png", 20, tipo);
+            Character pajaro = new Character("Pajaro" + i, "assets/pajaro.png", 20, tipo);
             pajaro.tipoMovimiento = tipoMov;
             pajaro.velocidadX = random.nextInt(15) + 3;
             pajaro.velocidadY = random.nextInt(15) + 3;

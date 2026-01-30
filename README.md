@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Zorrito](zorro.png)
+![Zorrito](assets/zorro.png)
 
 **Un juego arcade 2D desarrollado 100% en Java puro**
 
@@ -33,7 +33,7 @@
 <tr>
 <td align="center" width="200">
 
-![Zorrito](zorro.png)
+![Zorrito](assets/zorro.png)
 
 **Zorrito**<br/>
 <sub>El protagonista.<br/>Tú lo controlas.</sub>
@@ -41,7 +41,7 @@
 </td>
 <td align="center" width="200">
 
-![Pájaro](pajaro.png)
+![Pájaro](assets/pajaro.png)
 
 **Pájaros**<br/>
 <sub>Rebotan por la pantalla.<br/>¡Captúralos!</sub>
@@ -49,7 +49,7 @@
 </td>
 <td align="center" width="200">
 
-![Águila](aguila.png)
+![Águila](assets/aguila.png)
 
 **Águilas**<br/>
 <sub>Te persiguen sin piedad.<br/>¡Evítalas!</sub>
@@ -57,7 +57,7 @@
 </td>
 <td align="center" width="200">
 
-![Jaula](jaula.png)
+![Jaula](assets/jaula.png)
 
 **Jaula**<br/>
 <sub>Donde van los<br/>pájaros capturados.</sub>
@@ -70,7 +70,7 @@
 
 <div align="center">
 
-![Bosque](bosque.png)
+![Bosque](assets/bosque.png)
 
 *El bosque donde transcurre la acción*
 
@@ -160,17 +160,26 @@ El proyecto sigue una arquitectura modular con separación de responsabilidades:
 
 ```
 Zorrito_ai/
-├── Zorrito.java          # Punto de entrada
-├── Juego.java            # Lógica del game loop
-├── Display.java          # Renderizado y ventana
-├── Character.java        # Modelo de entidades
-├── MovimientoHandler.java # Estrategias de movimiento
-├── TipoMovimiento.java   # Enum de tipos
-├── Direccion.java        # Enum de direcciones
-├── CollisionUtils.java   # Detección de colisiones
-├── SpriteUtils.java      # Manipulación de sprites
-├── MovementUtils.java    # Cálculos de movimiento
-└── test/                 # Tests unitarios (112 tests)
+├── run.sh                # Ejecutar el juego
+├── compilar.sh           # Compilar el proyecto
+├── test.sh               # Ejecutar tests
+├── src/                  # Código fuente Java
+│   ├── Zorrito.java      # Punto de entrada
+│   ├── Juego.java        # Lógica del game loop
+│   ├── Display.java      # Renderizado y ventana
+│   ├── Character.java    # Modelo de entidades
+│   ├── MovimientoHandler.java
+│   ├── CollisionUtils.java
+│   ├── SpriteUtils.java
+│   └── MovementUtils.java
+├── assets/               # Imágenes del juego
+│   ├── sprites.png       # Animación del zorro
+│   ├── bosque.png        # Fondo del escenario
+│   ├── pajaro.png        # Sprites de pájaros
+│   ├── aguila.png        # Sprite de águilas
+│   └── jaula.png         # Sprite de la jaula
+├── test/                 # Tests unitarios (112 tests)
+└── documentation/        # Documentación técnica
 ```
 
 ### Diagrama de Clases (simplificado)
@@ -236,7 +245,7 @@ El proyecto incluye 112 tests unitarios con 97% de cobertura.
 
 ### Animación del Zorrito
 
-![Sprites](sprites.png)
+![Sprites](assets/sprites.png)
 
 *Sprite sheet con 8 frames de animación*
 

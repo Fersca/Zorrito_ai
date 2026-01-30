@@ -126,7 +126,7 @@ public class Zorrito {
 
         // Guarda la captura como archivo PNG
         try {
-            ImageIO.write(screenFullImage, "PNG", new File("screenshot.png"));
+            ImageIO.write(screenFullImage, "PNG", new File("assets/screenshot.png"));
         } catch (IOException ex) {
             ex.printStackTrace();
         }

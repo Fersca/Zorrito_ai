@@ -6,7 +6,7 @@ mkdir ./Compilado
 mkdir ./Compilado/classes
 mkdir ./Compilado/jar
 echo "Compilando clases..."
-javac -d ./Compilado/classes/ Zorrito.java Juego.java Display.java Character.java Direccion.java TipoMovimiento.java MovimientoHandler.java CollisionUtils.java MovementUtils.java SpriteUtils.java
+javac -d ./Compilado/classes/ src/*.java
 echo "Creando Jar..."
 jar --create --file ./Compilado/jar/Zorrito.jar --manifest MANIFEST.MF -C ./Compilado/classes/ .
 echo "Compilación Completa"

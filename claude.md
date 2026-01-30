@@ -26,19 +26,43 @@
 
 ```
 Zorrito_ai/
-├── Zorrito.java       # Código principal (1284 líneas) - TODO EL JUEGO
-├── MANIFEST.MF        # Manifest para crear JAR ejecutable
+├── run.sh             # Script para ejecutar el juego
 ├── compilar.sh        # Script de compilación
-├── CLAUDE.md          # Este archivo - reglas y documentación
-├── readme.txt         # Documentación sobre compilación nativa
-└── Assets gráficos:
-    ├── sprites.png    # Sprite sheet del zorro (8 frames, 1098x1932px)
-    ├── bosque.png     # Fondo del escenario
-    ├── pajaro.png     # Sprites de pájaros enemigos
-    ├── aguila.png     # Sprite de águilas predadoras
-    ├── jaula.png      # Sprite de la jaula/objetivo
-    ├── zorro.png      # Icono del zorro
-    └── zorro_muerto.png # Imagen del zorro cazado
+├── test.sh            # Script para correr tests con coverage
+├── MANIFEST.MF        # Manifest para crear JAR ejecutable
+├── claude.md          # Este archivo - reglas y documentación
+├── README.md          # Documentación para GitHub
+│
+├── src/               # Código fuente Java
+│   ├── Zorrito.java       # Punto de entrada (~135 líneas)
+│   ├── Juego.java         # Lógica del game loop (~545 líneas)
+│   ├── Display.java       # Renderizado y ventana (~270 líneas)
+│   ├── Character.java     # Modelo de entidades (~290 líneas)
+│   ├── MovimientoHandler.java # Estrategias de movimiento
+│   ├── CollisionUtils.java    # Detección de colisiones
+│   ├── SpriteUtils.java       # Manipulación de sprites
+│   ├── MovementUtils.java     # Cálculos de movimiento
+│   ├── TipoMovimiento.java    # Enum de tipos de movimiento
+│   └── Direccion.java         # Enum de direcciones
+│
+├── assets/            # Imágenes del juego
+│   ├── sprites.png        # Sprite sheet del zorro (8 frames)
+│   ├── bosque.png         # Fondo del escenario
+│   ├── pajaro.png         # Sprites de pájaros
+│   ├── aguila.png         # Sprite de águilas
+│   ├── jaula.png          # Sprite de la jaula
+│   ├── zorro.png          # Icono del zorro
+│   └── zorro_muerto.png   # Imagen del zorro cazado
+│
+├── test/              # Tests unitarios (112 tests, 97% coverage)
+│   ├── CharacterTest.java
+│   ├── MovimientoHandlerTest.java
+│   ├── CollisionUtilsTest.java
+│   ├── MovementUtilsTest.java
+│   └── SpriteUtilsTest.java
+│
+└── documentation/     # Documentación técnica con diagramas
+    └── index.html
 ```
 
 ---
@@ -128,11 +152,14 @@ enum Direccion { Derecha, Izquierda, Arriba, Abajo, Quieto }
 | `acciónDeTeclaPresionada()` | ~710-760 | Procesa input de teclado |
 | `resetJuego()` | ~765 | Reinicia el juego |
 
-**Estrategias de Movimiento (Lambdas):**
+**Estrategias de Movimiento (MovimientoHandler):**
 ```java
-Function<Character, Void> movimientoNulo    // Estático (fondo, jaula)
-Function<Character, Void> movimientoRebote  // Rebota en bordes (pájaros)
-Function<Character, Void> movimientoCazar   // Persigue al jugador (águilas)
+// Métodos estáticos en MovimientoHandler
+aplicarMovimientoNulo(c)       // Estático (fondo, jaula)
+aplicarMovimientoRebote(c, ...)  // Rebota en bordes (pájaros)
+aplicarMovimientoArco(c, ...)    // Movimiento circular
+aplicarMovimientoAleatorio(c, ...)  // Cambio de dirección aleatorio
+aplicarMovimientoCazar(c)      // Persigue al jugador (águilas)
 ```
 
 #### 4. Clase DISPLAY (Líneas 769-1013)
@@ -332,13 +359,14 @@ java -jar Compilado/jar/Zorrito.jar
 ## Notas para Modificaciones
 
 ### Para agregar un nuevo tipo de enemigo:
-1. Crear imagen PNG en la raíz del proyecto
-2. En `creaListaDePersonajes()`, instanciar nuevo Character
-3. Asignar estrategia de movimiento (nueva lambda o existente)
-4. Agregar a la lista de personajes
+1. Crear imagen PNG en `assets/`
+2. En `src/Juego.java` método `creaListaDePersonajes()`, instanciar nuevo Character
+3. Asignar tipo de movimiento en TipoMovimiento enum
+4. Implementar lógica en `src/MovimientoHandler.java` si es nuevo tipo
+5. Agregar a la lista de personajes
 
 ### Para modificar la IA de persecución:
-- Editar `movimientoCazar` en clase Juego (~línea 500)
+- Editar `aplicarMovimientoCazar()` en `src/MovimientoHandler.java`
 
 ### Para cambiar velocidad del juego:
 - Modificar el período del Timer (actualmente 50ms) en `comenzar()`
