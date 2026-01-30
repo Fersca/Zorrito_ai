@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zorrito - Documentación Técnica</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 { color: #d35400; border-bottom: 3px solid #d35400; padding-bottom: 10px; }
+        h2 { color: #2c3e50; margin-top: 40px; }
+        h3 { color: #7f8c8d; }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .mermaid { text-align: center; }
+        nav {
+            background: #2c3e50;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        nav a:hover { background: #34495e; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #ecf0f1; }
+        code { background: #ecf0f1; padding: 2px 6px; border-radius: 3px; }
+        .tech-stack { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tech-item {
+            background: #3498db;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Zorrito - Documentación Técnica</h1>
+
+    <nav>
+        <a href="#descripcion">Descripción</a>
+        <a href="#arquitectura">Arquitectura</a>
+        <a href="#clases">Diagrama de Clases</a>
+        <a href="#secuencia">Secuencia</a>
+        <a href="#dfd">DFD</a>
+        <a href="#entidad">Entidad-Relación</a>
+    </nav>
+
+    <section id="descripcion" class="card">
+        <h2>Descripción General</h2>
+        <p><strong>Zorrito</strong> es un videojuego arcade 2D desarrollado 100% en Java puro (sin librerías externas).</p>
+
+        <h3>Narrativa del Juego</h3>
+        <ul>
+            <li>El jugador controla a un pequeño zorro</li>
+            <li>Debe evitar ser cazado por águilas (predadores con IA)</li>
+            <li>Debe capturar pájaros que rebotan por la pantalla</li>
+            <li><strong>Victoria:</strong> capturar todos los pájaros antes de que termine el tiempo</li>
+            <li><strong>Derrota:</strong> ser alcanzado por un águila o que se agote el tiempo</li>
+        </ul>
+
+        <h3>Stack Tecnológico</h3>
+        <div class="tech-stack">
+            <span class="tech-item">Java 14+</span>
+            <span class="tech-item">AWT/Swing</span>
+            <span class="tech-item">BufferStrategy</span>
+            <span class="tech-item">AffineTransform</span>
+            <span class="tech-item">JUnit 5</span>
+            <span class="tech-item">JaCoCo</span>
+        </div>
+    </section>
+
+    <section id="arquitectura" class="card">
+        <h2>Diagrama de Arquitectura</h2>
+        <p>El juego sigue una arquitectura de capas con separación clara de responsabilidades:</p>
+
+        <div class="mermaid">
+flowchart TB
+    subgraph Entrada["Capa de Entrada"]
+        Mouse["Mouse Input"]
+        Keyboard["Keyboard Input"]
+    end
+
+    subgraph Logica["Capa de Lógica"]
+        Juego["Juego<br/>(Game Loop)"]
+        MovHandler["MovimientoHandler<br/>(Estrategias)"]
+        Collision["CollisionUtils<br/>(Detección)"]
+    end
+
+    subgraph Modelo["Capa de Modelo"]
+        Character["Character<br/>(Entidades)"]
+        TipoMov["TipoMovimiento<br/>(Enum)"]
+        Direccion["Direccion<br/>(Enum)"]
+    end
+
+    subgraph Presentacion["Capa de Presentación"]
+        Display["Display<br/>(Ventana)"]
+        Canvas["MyCanvas<br/>(Renderizado)"]
+    end
+
+    subgraph Utilidades["Utilidades"]
+        SpriteUtils["SpriteUtils"]
+        MovementUtils["MovementUtils"]
+    end
+
+    Mouse --> Juego
+    Keyboard --> Juego
+    Juego --> MovHandler
+    Juego --> Collision
+    MovHandler --> Character
+    Character --> TipoMov
+    Character --> Direccion
+    Juego --> Display
+    Display --> Canvas
+    Character --> SpriteUtils
+        </div>
+    </section>
+
+    <section id="clases" class="card">
+        <h2>Diagrama de Clases</h2>
+
+        <div class="mermaid">
+classDiagram
+    class Zorrito {
+        -Juego juego
+        -Display display
+        +main(String[] args)
+        -capturaPantalla()
+    }
+
+    class Juego {
+        +int cantidadMalos
+        +int cantidadAguilas
+        +boolean centrar
+        +boolean sinFondo
+        -int terminado
+        -Timer timer
+        -Display display
+        +ArrayList~Character~ personajes
+        +Character principal
+        +Set~Integer~ pressedKeys
+        +double zoom
+        +comenzar()
+        +crearPersonajes()
+        +accionDeTeclaPresionada()
+        -aplicarMovimiento(Character)
+        -creaListaDePersonajes()
+        -crearEnemigos()
+        -mueveSegunMouse(int, int)
+        -resetJuego()
+    }
+
+    class Display {
+        -MyCanvas canvas
+        -Juego juego
+        +Function terminadoFunc
+        +bufferedDraw()
+        +trackeaPersonajes(ArrayList, Frame)
+    }
+
+    class Character {
+        +Image img
+        +int x, y
+        +int centroX, centroY
+        +int radio
+        +int velocidadX, velocidadY
+        +TipoMovimiento tipoMovimientoEnum
+        +Direccion avanzando_x
+        +Direccion avanzando_y
+        +boolean colisionado
+        +boolean cazado
+        +Character follow
+        +Sprite[] spritesArray
+        +getImagen() Image
+        +actualizaCentroYRadio()
+        +verificaColision(Character) boolean
+        +cacheSprites()
+    }
+
+    class MovimientoHandler {
+        +aplicarMovimientoNulo(Character)$
+        +aplicarMovimientoRebote(Character, int, int, int, int)$
+        +aplicarMovimientoArco(Character, int, int, int, int)$
+        +aplicarMovimientoAleatorio(Character, int, int, int, int)$
+        +aplicarMovimientoCazar(Character)$
+    }
+
+    class CollisionUtils {
+        +verificaColisionCircular(int, int, int, int, int, int)$ boolean
+        +calcularDistancia(int, int, int, int)$ double
+        +calcularRadio(int, int)$ int
+    }
+
+    class SpriteUtils {
+        +toBufferedImage(Image)$ BufferedImage
+        +cropImage(BufferedImage, int, int, int, int)$ BufferedImage
+        +espejarHorizontal(BufferedImage)$ BufferedImage
+        +escalarImagen(BufferedImage, int, int)$ BufferedImage
+    }
+
+    class TipoMovimiento {
+        <<enumeration>>
+        NULO
+        REBOTE
+        ARCO
+        ALEATORIO
+        CAZAR
+    }
+
+    class Direccion {
+        <<enumeration>>
+        Derecha
+        Izquierda
+        Arriba
+        Abajo
+        Quieto
+    }
+
+    Zorrito --> Juego
+    Zorrito --> Display
+    Juego --> Display
+    Juego --> Character
+    Juego --> MovimientoHandler
+    Display --> Juego
+    Character --> TipoMovimiento
+    Character --> Direccion
+    Character --> CollisionUtils
+    Character --> SpriteUtils
+        </div>
+    </section>
+
+    <section id="secuencia" class="card">
+        <h2>Diagrama de Secuencia - Game Loop</h2>
+        <p>Flujo de ejecución cada 50ms (20 FPS):</p>
+
+        <div class="mermaid">
+sequenceDiagram
+    participant Timer
+    participant Juego
+    participant Mouse
+    participant MovHandler as MovimientoHandler
+    participant Character
+    participant Collision as CollisionUtils
+    participant Display
+
+    Timer->>Juego: run() cada 50ms
+
+    Juego->>Mouse: getPointerInfo()
+    Mouse-->>Juego: posición (x, y)
+    Juego->>Juego: mueveSegunMouse()
+
+    loop Para cada personaje
+        Juego->>MovHandler: aplicarMovimiento(character)
+        MovHandler->>Character: modifica posición
+        Character->>Character: actualizaCentroYRadio()
+    end
+
+    loop Verificar colisiones
+        Juego->>Character: verificaColision(otro)
+        Character->>Collision: verificaColisionCircular()
+        Collision-->>Character: true/false
+
+        alt Si colisionó
+            Juego->>Character: setColision(true)
+        end
+    end
+
+    alt Tiempo agotado
+        Juego->>Juego: terminado = 3
+        Juego->>Timer: cancel()
+    else Zorro cazado
+        Juego->>Juego: terminado = 2
+        Juego->>Timer: cancel()
+    else Todos capturados
+        Juego->>Juego: terminado = 1
+        Juego->>Timer: cancel()
+    end
+
+    Juego->>Display: bufferedDraw()
+    Display->>Display: renderizar frame
+        </div>
+    </section>
+
+    <section id="dfd" class="card">
+        <h2>Diagrama de Flujo de Datos (DFD)</h2>
+
+        <div class="mermaid">
+flowchart LR
+    subgraph Externo["Entidades Externas"]
+        Usuario["Usuario"]
+    end
+
+    subgraph Procesos["Procesos"]
+        P1["1. Procesar<br/>Input"]
+        P2["2. Calcular<br/>Movimiento"]
+        P3["3. Detectar<br/>Colisiones"]
+        P4["4. Actualizar<br/>Estado"]
+        P5["5. Renderizar<br/>Frame"]
+    end
+
+    subgraph Almacenes["Almacenes de Datos"]
+        D1[("Personajes")]
+        D2[("Estado<br/>del Juego")]
+        D3[("Configuración")]
+    end
+
+    Usuario -->|"Mouse/Teclado"| P1
+    P1 -->|"Dirección"| P2
+    D3 -->|"Parámetros"| P2
+    D1 -->|"Posiciones"| P2
+    P2 -->|"Nuevas posiciones"| D1
+    D1 -->|"Personajes"| P3
+    P3 -->|"Colisiones"| P4
+    P4 -->|"Nuevo estado"| D2
+    D2 -->|"Estado"| P5
+    D1 -->|"Sprites"| P5
+    P5 -->|"Pantalla"| Usuario
+        </div>
+    </section>
+
+    <section id="entidad" class="card">
+        <h2>Diagrama Entidad-Relación</h2>
+        <p>Relaciones entre las entidades del juego:</p>
+
+        <div class="mermaid">
+erDiagram
+    JUEGO ||--o{ CHARACTER : contiene
+    JUEGO ||--|| DISPLAY : tiene
+    JUEGO ||--|| CHARACTER : principal
+
+    CHARACTER ||--|| TIPO_MOVIMIENTO : tiene
+    CHARACTER ||--|| DIRECCION : avanzando_x
+    CHARACTER ||--|| DIRECCION : avanzando_y
+    CHARACTER ||--o| CHARACTER : follow
+    CHARACTER ||--o{ SPRITE : sprites
+
+    JUEGO {
+        int cantidadMalos
+        int cantidadAguilas
+        int terminado
+        long tiempoLimite
+        double zoom
+        int general_x
+        int general_y
+    }
+
+    CHARACTER {
+        string name
+        int x
+        int y
+        int centroX
+        int centroY
+        int radio
+        int velocidadX
+        int velocidadY
+        int angulo
+        boolean colisionado
+        boolean cazado
+    }
+
+    TIPO_MOVIMIENTO {
+        enum NULO
+        enum REBOTE
+        enum ARCO
+        enum ALEATORIO
+        enum CAZAR
+    }
+
+    DIRECCION {
+        enum Derecha
+        enum Izquierda
+        enum Arriba
+        enum Abajo
+        enum Quieto
+    }
+
+    SPRITE {
+        int x
+        int y
+        int w
+        int h
+    }
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Estructura de Archivos</h2>
+        <table>
+            <tr><th>Archivo</th><th>Descripción</th><th>Líneas</th></tr>
+            <tr><td><code>Zorrito.java</code></td><td>Punto de entrada, CLI</td><td>~135</td></tr>
+            <tr><td><code>Juego.java</code></td><td>Lógica principal, game loop</td><td>~545</td></tr>
+            <tr><td><code>Display.java</code></td><td>Ventana y renderizado</td><td>~270</td></tr>
+            <tr><td><code>Character.java</code></td><td>Modelo de entidades</td><td>~290</td></tr>
+            <tr><td><code>MovimientoHandler.java</code></td><td>Estrategias de movimiento</td><td>~210</td></tr>
+            <tr><td><code>TipoMovimiento.java</code></td><td>Enum tipos de movimiento</td><td>~10</td></tr>
+            <tr><td><code>Direccion.java</code></td><td>Enum direcciones</td><td>~7</td></tr>
+            <tr><td><code>CollisionUtils.java</code></td><td>Detección de colisiones</td><td>~90</td></tr>
+            <tr><td><code>SpriteUtils.java</code></td><td>Manipulación de sprites</td><td>~220</td></tr>
+            <tr><td><code>MovementUtils.java</code></td><td>Cálculos de movimiento</td><td>~230</td></tr>
+        </table>
+    </section>
+
+    <section class="card">
+        <h2>Controles del Juego</h2>
+        <table>
+            <tr><th>Tecla</th><th>Acción</th></tr>
+            <tr><td><code>I/J/K/L</code></td><td>Movimiento 8-direccional (estilo Vim)</td></tr>
+            <tr><td><code>Mouse</code></td><td>Movimiento automático hacia el cursor</td></tr>
+            <tr><td><code>Z/X</code></td><td>Zoom +/-</td></tr>
+            <tr><td><code>V/C/R/F</code></td><td>Desplazar cámara</td></tr>
+            <tr><td><code>E</code></td><td>Reiniciar juego</td></tr>
+            <tr><td><code>Q</code></td><td>Salir</td></tr>
+        </table>
+    </section>
+
+    <footer class="card" style="text-align: center; color: #7f8c8d;">
+        <p>Documentación generada automáticamente - Zorrito v1.0</p>
+        <p>Java puro | Sin librerías externas | 85 tests | 97% coverage</p>
+    </footer>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose'
+        });
+    </script>
+</body>
+</html>
