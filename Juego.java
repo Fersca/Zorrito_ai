@@ -71,167 +71,6 @@ public class Juego {
     int jaulaX = 375;
     int jaulaY = 360;
 
-    // Estrategia de movimiento nulo (elementos estáticos)
-    Function<Character, Void> movimientoNulo = (Character c) -> {
-        return null;
-    };
-
-    // Estrategia de movimiento rebote (pájaros)
-    Function<Character, Void> movimientoRebote = (Character c) -> {
-        // Si colisionó, lo manda a la jaula
-        if (c.colisionado){
-            c.x = jaulaX + 25;
-            c.y = jaulaY + 40;
-            return null;
-        }
-
-        // Avanza según dirección actual
-        if (Direccion.Derecha == c.avanzando_x)
-            c.x = c.x + c.velocidadX;
-        if (Direccion.Izquierda == c.avanzando_x)
-            c.x = c.x - c.velocidadX;
-        if (Direccion.Abajo == c.avanzando_y)
-            c.y = c.y + c.velocidadY;
-        if (Direccion.Arriba == c.avanzando_y)
-            c.y = c.y - c.velocidadY;
-
-        // Rebota en los bordes de la pantalla
-        int ancho = display.getWidth();
-        int alto = display.getHeight();
-
-        if (c.centroX > ancho)
-            c.avanzando_x = Direccion.Izquierda;
-        if (c.centroX < 0)
-            c.avanzando_x = Direccion.Derecha;
-        if (c.centroY > alto)
-            c.avanzando_y = Direccion.Arriba;
-        if (c.centroY < 0)
-            c.avanzando_y = Direccion.Abajo;
-
-        // Rota el personaje
-        c.angulo = c.angulo + c.rotaAngulo;
-        return null;
-    };
-
-    // Estrategia de movimiento en arco (curvas suaves)
-    Function<Character, Void> movimientoArco = (Character c) -> {
-        if (c.colisionado){
-            c.x = jaulaX + 25;
-            c.y = jaulaY + 40;
-            return null;
-        }
-
-        // Actualiza el ángulo de movimiento para crear curva
-        c.anguloMovimiento += c.velocidadAngular;
-
-        // Calcula el movimiento basado en el ángulo
-        double velocidad = Math.sqrt(c.velocidadX * c.velocidadX + c.velocidadY * c.velocidadY);
-        int deltaX = (int) Math.round(Math.cos(c.anguloMovimiento) * velocidad);
-        int deltaY = (int) Math.round(Math.sin(c.anguloMovimiento) * velocidad);
-
-        c.x += deltaX;
-        c.y += deltaY;
-
-        // Rebote en los bordes
-        int ancho = display.getWidth();
-        int alto = display.getHeight();
-
-        if (c.centroX > ancho || c.centroX < 0) {
-            c.anguloMovimiento = Math.PI - c.anguloMovimiento;
-            c.velocidadAngular = -c.velocidadAngular;
-        }
-        if (c.centroY > alto || c.centroY < 0) {
-            c.anguloMovimiento = -c.anguloMovimiento;
-            c.velocidadAngular = -c.velocidadAngular;
-        }
-
-        c.angulo = c.angulo + c.rotaAngulo;
-        return null;
-    };
-
-    // Estrategia de movimiento aleatorio con arcos cambiantes
-    Function<Character, Void> movimientoAleatorio = (Character c) -> {
-        if (c.colisionado){
-            c.x = jaulaX + 25;
-            c.y = jaulaY + 40;
-            return null;
-        }
-
-        // Incrementa contador para cambio de dirección
-        c.contadorCambio++;
-
-        // Cambia la velocidad angular periódicamente
-        if (c.contadorCambio >= c.frecuenciaCambio) {
-            c.contadorCambio = 0;
-            Random rand = new Random();
-            c.velocidadAngular = (rand.nextDouble() - 0.5) * 0.15;
-            c.frecuenciaCambio = rand.nextInt(60) + 20;
-        }
-
-        // Actualiza el ángulo de movimiento
-        c.anguloMovimiento += c.velocidadAngular;
-
-        // Calcula el movimiento
-        double velocidad = Math.sqrt(c.velocidadX * c.velocidadX + c.velocidadY * c.velocidadY);
-        int deltaX = (int) Math.round(Math.cos(c.anguloMovimiento) * velocidad);
-        int deltaY = (int) Math.round(Math.sin(c.anguloMovimiento) * velocidad);
-
-        c.x += deltaX;
-        c.y += deltaY;
-
-        // Rebote en los bordes con corrección de posición
-        int ancho = display.getWidth();
-        int alto = display.getHeight();
-
-        if (c.centroX > ancho) {
-            c.anguloMovimiento = Math.PI - c.anguloMovimiento;
-            c.x = ancho - c.radio;
-        }
-        if (c.centroX < 0) {
-            c.anguloMovimiento = Math.PI - c.anguloMovimiento;
-            c.x = c.radio;
-        }
-        if (c.centroY > alto) {
-            c.anguloMovimiento = -c.anguloMovimiento;
-            c.y = alto - c.radio;
-        }
-        if (c.centroY < 0) {
-            c.anguloMovimiento = -c.anguloMovimiento;
-            c.y = c.radio;
-        }
-
-        c.angulo = c.angulo + c.rotaAngulo;
-        return null;
-    };
-
-    // Estrategia de movimiento de caza (águilas persiguen al zorro)
-    Function<Character, Void> movimientoCazar = (Character c) -> {
-        if (c.colisionado){
-            c.follow.cazado = true;
-            return null;
-        }
-
-        // Obtiene posiciones de presa y cazador
-        int presaX = c.follow.x;
-        int presaY = c.follow.y;
-        int cazadorX = c.x;
-        int cazadorY = c.y;
-
-        // Se mueve hacia la presa
-        if (presaX < cazadorX)
-            c.x = c.x - c.velocidadX;
-        else
-            c.x = c.x + c.velocidadX;
-
-        if (presaY < cazadorY)
-            c.y = c.y - c.velocidadY;
-        else
-            c.y = c.y + c.velocidadY;
-
-        c.angulo = c.angulo + c.rotaAngulo;
-        return null;
-    };
-
     public Function<Void, Integer> terminadoFunc(){
         return (Void) -> {return this.terminado;};
     }
@@ -242,13 +81,44 @@ public class Juego {
     }
 
     /**
+     * Aplica el movimiento a un personaje según su tipo.
+     * Usa MovimientoHandler en lugar de lambdas para código procedural.
+     */
+    private void aplicarMovimiento(Character c) {
+        int ancho = display.getWidth();
+        int alto = display.getHeight();
+
+        // Selecciona el método de movimiento según el tipo
+        switch (c.tipoMovimientoEnum) {
+            case NULO:
+                MovimientoHandler.aplicarMovimientoNulo(c);
+                break;
+            case REBOTE:
+                MovimientoHandler.aplicarMovimientoRebote(c, jaulaX, jaulaY, ancho, alto);
+                break;
+            case ARCO:
+                MovimientoHandler.aplicarMovimientoArco(c, jaulaX, jaulaY, ancho, alto);
+                break;
+            case ALEATORIO:
+                MovimientoHandler.aplicarMovimientoAleatorio(c, jaulaX, jaulaY, ancho, alto);
+                break;
+            case CAZAR:
+                MovimientoHandler.aplicarMovimientoCazar(c);
+                break;
+        }
+
+        // Actualiza centro y radio después del movimiento
+        c.actualizaCentroYRadio();
+    }
+
+    /**
      * Crea todos los personajes del juego: zorro, fondo, águilas, pájaros, jaula.
      */
     private Collection<Character> creaListaDePersonajes() {
         ArrayList<Character> personajesCreados = new ArrayList<Character>();
 
-        // Crea al zorrito (personaje principal)
-        Character zorrito = new Character("Zorrito", "sprites.png", 10, movimientoNulo);
+        // Crea al zorrito (personaje principal) con movimiento nulo
+        Character zorrito = new Character("Zorrito", "sprites.png", 10, TipoMovimiento.NULO);
 
         // Configura los sprites de animación
         zorrito.hasSprites = true;
@@ -268,18 +138,18 @@ public class Juego {
         zorrito.y = display.getHeight() / 2;
         zorrito.setImagenColision("zorro_muerto.png");
 
-        // Crea la jaula (objetivo)
-        Character jaula = new Character("Jaula", "jaula.png", 5, movimientoNulo);
+        // Crea la jaula (objetivo) con movimiento nulo
+        Character jaula = new Character("Jaula", "jaula.png", 5, TipoMovimiento.NULO);
         jaula.x = jaulaX;
         jaula.y = jaulaY;
         jaula.colisiona = false;
 
-        // Crea el fondo del mapa
+        // Crea el fondo del mapa con movimiento nulo
         Character bosque;
         if (sinFondo){
-            bosque = new Character("Bosque", "screenshot.png", 1, movimientoNulo);
+            bosque = new Character("Bosque", "screenshot.png", 1, TipoMovimiento.NULO);
         } else {
-            bosque = new Character("Bosque", "bosque.png", 1, movimientoNulo);
+            bosque = new Character("Bosque", "bosque.png", 1, TipoMovimiento.NULO);
         }
 
         bosque.x = 0;
@@ -292,18 +162,18 @@ public class Juego {
         bosque.esFondoInfinito = !sinFondo;
         personajesCreados.add(bosque);
 
-        // Crea el águila principal
-        Character aguila = new Character("Aguila", "aguila.png", 7, movimientoCazar);
+        // Crea el águila principal con movimiento de caza
+        Character aguila = new Character("Aguila", "aguila.png", 7, TipoMovimiento.CAZAR);
         aguila.x = display.getWidth();
         aguila.y = 0;
         aguila.velocidadX = 2;
         aguila.velocidadY = 2;
         aguila.follow = zorrito;
 
-        // Crea águilas adicionales
+        // Crea águilas adicionales con movimiento de caza
         Random random = new Random();
         for (int i = 0; i < cantidadAguilas; i++){
-            Character enemy = new Character("Aguila" + i, "aguila.png", 7, movimientoCazar);
+            Character enemy = new Character("Aguila" + i, "aguila.png", 7, TipoMovimiento.CAZAR);
             enemy.x = random.nextInt(display.getWidth());
             enemy.y = random.nextInt(display.getHeight());
             enemy.velocidadX = 2;
@@ -315,7 +185,7 @@ public class Juego {
         personajesCreados.add(zorrito);
         personajesCreados.add(aguila);
 
-        // Crea los pájaros enemigos
+        // Crea los pájaros enemigos con diferentes tipos de movimiento
         for (Character p : crearEnemigos()) {
             personajesCreados.add(p);
         }
@@ -335,20 +205,20 @@ public class Juego {
         Direccion[] movimientosArriba_Abajo = {Direccion.Arriba, Direccion.Abajo};
         Direccion[] movimientosIzquierda_Derecha = {Direccion.Izquierda, Direccion.Derecha};
 
-        // Array de estrategias de movimiento disponibles
-        @SuppressWarnings("unchecked")
-        Function<Character, Void>[] estrategias = new Function[] {
-            movimientoRebote,
-            movimientoArco,
-            movimientoAleatorio
+        // Array de tipos de movimiento disponibles para pájaros
+        TipoMovimiento[] tiposMovimiento = {
+            TipoMovimiento.REBOTE,
+            TipoMovimiento.ARCO,
+            TipoMovimiento.ALEATORIO
         };
 
         for (int i = 0; i < this.cantidadMalos; i++){
-            // Selecciona una estrategia aleatoria
+            // Selecciona un tipo de movimiento aleatorio
             int tipoMov = random.nextInt(3);
-            Function<Character, Void> estrategia = estrategias[tipoMov];
+            TipoMovimiento tipo = tiposMovimiento[tipoMov];
 
-            Character pajaro = new Character("Pajaro" + i, "pajaro.png", 20, estrategia);
+            // Crea el pájaro con el tipo de movimiento seleccionado
+            Character pajaro = new Character("Pajaro" + i, "pajaro.png", 20, tipo);
             pajaro.tipoMovimiento = tipoMov;
             pajaro.velocidadX = random.nextInt(15) + 3;
             pajaro.velocidadY = random.nextInt(15) + 3;
@@ -357,9 +227,11 @@ public class Juego {
 
             // Configuración específica según tipo de movimiento
             if (tipoMov == 1) {
+                // Movimiento en arco: ángulo inicial aleatorio
                 pajaro.anguloMovimiento = random.nextDouble() * Math.PI * 2;
                 pajaro.velocidadAngular = (random.nextDouble() - 0.5) * 0.1;
             } else if (tipoMov == 2) {
+                // Movimiento aleatorio: configuración inicial
                 pajaro.anguloMovimiento = random.nextDouble() * Math.PI * 2;
                 pajaro.velocidadAngular = (random.nextDouble() - 0.5) * 0.1;
                 pajaro.frecuenciaCambio = random.nextInt(40) + 30;
@@ -387,24 +259,28 @@ public class Juego {
                 Point p = pi.getLocation();
                 mueveSegunMouse(p.x, p.y);
 
-                // Actualiza posición de todos los personajes
+                // Aplica movimiento a todos los personajes usando MovimientoHandler
                 for (Character c : personajes) {
-                    c.seMueve();
+                    aplicarMovimiento(c);
                 }
 
-                // Verifica colisiones
+                // Verifica colisiones entre el principal y los demás
                 boolean colisionPrincipal = false;
                 int vivos = 0;
 
                 for (Character c : personajes) {
+                    // Salta personajes ya colisionados
                     if (c.colisionado) continue;
+                    // No verifica colisión consigo mismo
                     if (c.name.equals(principal.name)) continue;
 
+                    // Verifica colisión con el personaje principal
                     if (principal.verificaColision(c)){
                         c.setColision(true);
                         colisionPrincipal = true;
                     } else {
                         c.setColision(false);
+                        // Cuenta pájaros vivos (no águilas)
                         if (c.follow == null)
                             vivos++;
                     }
@@ -415,19 +291,23 @@ public class Juego {
                 // Verifica condiciones de fin del juego
                 long tiempoTranscurrido = System.currentTimeMillis() - initTimeMillis;
                 if (tiempoTranscurrido >= TIEMPO_LIMITE_MS) {
+                    // Tiempo agotado
                     terminado = 3;
                     display.bufferedDraw();
                     timer.cancel();
                 } else if (principal.cazado) {
+                    // El zorro fue cazado por un águila
                     terminado = 2;
                     display.bufferedDraw();
                     timer.cancel();
                 } else if (vivos == 2) {
+                    // Todos los pájaros capturados (quedan fondo y jaula)
                     terminado = 1;
                     display.bufferedDraw();
                     timer.cancel();
                 }
 
+                // Dibuja el frame actual
                 display.bufferedDraw();
             }
         };
@@ -441,6 +321,7 @@ public class Juego {
         if (!pressedKeys.isEmpty())
             return;
 
+        // Calcula la posición del personaje en pantalla
         double px = (general_x + principal.centroX) * zoom;
         double py = (general_y + principal.centroY) * zoom;
 
@@ -490,7 +371,7 @@ public class Juego {
         double angulo = Math.toDegrees(Math.atan(tangente));
         angulo = angulo + sumar;
 
-        // Determina la dirección según el ángulo
+        // Determina la dirección según el ángulo calculado
         if (angulo > 22.5 && angulo < 67.5){
             mueveArribaDerecha();
         } else if (angulo > 67.5 && angulo < 112.5){
@@ -654,6 +535,7 @@ public class Juego {
         personajes.clear();
         crearPersonajes();
 
+        // Cancela el timer actual y crea uno nuevo
         timer.cancel();
         timer = new Timer();
         timer.scheduleAtFixedRate(comienzaJuego(timer), 0, delay);

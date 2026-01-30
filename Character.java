@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.function.Function;
 import javax.imageio.ImageIO;
 
 /**
@@ -27,7 +26,7 @@ public class Character {
     public boolean fixedSize= false;
     public boolean drawFromCenter=true;
     private int scale;
-    public Function<Character, Void> movimiento;
+    public TipoMovimiento tipoMovimientoEnum = TipoMovimiento.NULO;
     public String name;
     public int centroX;
     public int centroY;
@@ -70,7 +69,7 @@ public class Character {
     // Record para definir regiones de sprites
     public record Sprite(int x, int y, int w, int h){}
 
-    public Character(String name, String imageFile, int scale, Function<Character, Void> movimientoPersonaje){
+    public Character(String name, String imageFile, int scale, TipoMovimiento tipoMov){
         // Carga la imagen del personaje desde archivo
         try {
             this.img = ImageIO.read(new File(imageFile));
@@ -80,7 +79,7 @@ public class Character {
         }
 
         this.scale = scale;
-        this.movimiento = movimientoPersonaje;
+        this.tipoMovimientoEnum = tipoMov;
         this.name = name;
     }
 
@@ -250,24 +249,23 @@ public class Character {
     }
 
     /**
-     * Ejecuta la función de movimiento y actualiza centro/radio.
+     * Actualiza el centro y radio del personaje.
+     * El movimiento se aplica desde Juego usando MovimientoHandler.
      */
-    public void seMueve(){
-        // Aplica el algoritmo de movimiento
-        this.movimiento.apply(this);
-
+    public void actualizaCentroYRadio(){
         // El fondo no necesita calcular centro ni radio
         if (name.equals("Bosque")){
             return;
         }
 
         // Calcula el centro del personaje
-        centroX = x+width/2;
-        centroY = y+height/2;
+        centroX = x + width / 2;
+        centroY = y + height / 2;
 
         // Calcula el radio para colisiones (primera vez)
-        if (radio==0)
-            radio = (width>height)?width/2:height/2;
+        if (radio == 0) {
+            radio = (width > height) ? width / 2 : height / 2;
+        }
 
         // Si está colisionado, rota
         if (this.colisionado){
