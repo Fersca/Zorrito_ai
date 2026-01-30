@@ -11,6 +11,8 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
@@ -124,6 +126,21 @@ public class Display extends Frame {
         this.canvas.setFocusable(true);
         this.canvas.requestFocus();
 
+        // MouseListener para disparar proyectiles con click
+        MouseAdapter mouseHandler = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Acepta click izquierdo (1) o botón 3 (macOS trackpad)
+                if (e.getButton() == MouseEvent.BUTTON1 || e.getButton() == MouseEvent.BUTTON3) {
+                    juego.disparar();
+                }
+            }
+        };
+
+        // Agrega el listener de mouse al Frame y Canvas
+        addMouseListener(mouseHandler);
+        this.canvas.addMouseListener(mouseHandler);
+
         // Listener para cerrar la ventana
         addWindowListener(new WindowAdapter() {
             @Override
@@ -148,6 +165,23 @@ public class Display extends Frame {
 
         public MyCanvas(Display d) {
             this.rootDisplay = d;
+
+            // Habilita eventos de mouse en el canvas
+            enableEvents(java.awt.AWTEvent.MOUSE_EVENT_MASK);
+        }
+
+        // Procesa eventos de mouse directamente en el canvas
+        @Override
+        protected void processMouseEvent(java.awt.event.MouseEvent e) {
+            super.processMouseEvent(e);
+            // Detecta click para disparar proyectil
+            if (e.getID() == java.awt.event.MouseEvent.MOUSE_PRESSED) {
+                // Acepta click izquierdo (1) o botón 3 (macOS trackpad)
+                if (e.getButton() == java.awt.event.MouseEvent.BUTTON1 ||
+                    e.getButton() == java.awt.event.MouseEvent.BUTTON3) {
+                    rootDisplay.juego.disparar();
+                }
+            }
         }
 
         /**

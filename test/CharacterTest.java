@@ -309,4 +309,115 @@ class CharacterTest {
             assertFalse(personaje.esFondoInfinito);
         }
     }
+
+    @Nested
+    @DisplayName("Tests de propiedades de proyectil")
+    class ProyectilPropsTests {
+
+        @Test
+        @DisplayName("direccionX inicia en 0")
+        void direccionXInicial() {
+            assertEquals(0.0, personaje.direccionX, 0.001);
+        }
+
+        @Test
+        @DisplayName("direccionY inicia en 0")
+        void direccionYInicial() {
+            assertEquals(0.0, personaje.direccionY, 0.001);
+        }
+
+        @Test
+        @DisplayName("velocidadProyectil tiene valor por defecto")
+        void velocidadProyectilInicial() {
+            assertEquals(15, personaje.velocidadProyectil);
+        }
+
+        @Test
+        @DisplayName("esProyectil es false por defecto")
+        void esProyectilFalsePorDefecto() {
+            assertFalse(personaje.esProyectil);
+        }
+
+        @Test
+        @DisplayName("proyectilActivo es true por defecto")
+        void proyectilActivoTruePorDefecto() {
+            assertTrue(personaje.proyectilActivo);
+        }
+
+        @Test
+        @DisplayName("Puede configurar dirección normalizada")
+        void puedeConfigurarDireccion() {
+            personaje.direccionX = 0.707;
+            personaje.direccionY = 0.707;
+
+            assertEquals(0.707, personaje.direccionX, 0.001);
+            assertEquals(0.707, personaje.direccionY, 0.001);
+        }
+
+        @Test
+        @DisplayName("Puede marcar como proyectil")
+        void puedeMarcarComoProyectil() {
+            personaje.esProyectil = true;
+            personaje.tipoMovimientoEnum = TipoMovimiento.PROYECTIL;
+
+            assertTrue(personaje.esProyectil);
+            assertEquals(TipoMovimiento.PROYECTIL, personaje.tipoMovimientoEnum);
+        }
+
+        @Test
+        @DisplayName("Puede desactivar proyectil")
+        void puedeDesactivarProyectil() {
+            personaje.proyectilActivo = true;
+            personaje.proyectilActivo = false;
+
+            assertFalse(personaje.proyectilActivo);
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests de propiedades de empuje (águilas)")
+    class EmpujePropsTests {
+
+        @Test
+        @DisplayName("empujado es false por defecto")
+        void empujadoFalsePorDefecto() {
+            assertFalse(personaje.empujado);
+        }
+
+        @Test
+        @DisplayName("tiempoInicioEmpuje es 0 por defecto")
+        void tiempoInicioEmpujeInicial() {
+            assertEquals(0, personaje.tiempoInicioEmpuje);
+        }
+
+        @Test
+        @DisplayName("empujeDirX es 0 por defecto")
+        void empujeDirXInicial() {
+            assertEquals(0.0, personaje.empujeDirX, 0.001);
+        }
+
+        @Test
+        @DisplayName("empujeDirY es 0 por defecto")
+        void empujeDirYInicial() {
+            assertEquals(0.0, personaje.empujeDirY, 0.001);
+        }
+
+        @Test
+        @DisplayName("velocidadEmpuje tiene valor por defecto")
+        void velocidadEmpujeInicial() {
+            assertEquals(12, personaje.velocidadEmpuje);
+        }
+
+        @Test
+        @DisplayName("Puede activar estado empujado")
+        void puedeActivarEmpujado() {
+            personaje.empujado = true;
+            personaje.tiempoInicioEmpuje = System.currentTimeMillis();
+            personaje.empujeDirX = 0.5;
+            personaje.empujeDirY = 0.5;
+
+            assertTrue(personaje.empujado);
+            assertTrue(personaje.tiempoInicioEmpuje > 0);
+        }
+    }
 }

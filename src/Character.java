@@ -48,6 +48,20 @@ public class Character {
     // Setea otro caracter para que lo siga con el movimiento
     public Character follow;
 
+    // Propiedades para proyectiles (piedras)
+    public double direccionX = 0;      // Dirección normalizada en X
+    public double direccionY = 0;      // Dirección normalizada en Y
+    public int velocidadProyectil = 15; // Velocidad del proyectil
+    public boolean esProyectil = false; // Flag para identificar proyectiles
+    public boolean proyectilActivo = true; // Si el proyectil está activo
+
+    // Propiedades para estado "empujado" (cuando un águila es golpeada por piedra)
+    public boolean empujado = false;        // Si está siendo empujada
+    public long tiempoInicioEmpuje = 0;     // Timestamp cuando empezó el empuje
+    public double empujeDirX = 0;           // Dirección X del empuje
+    public double empujeDirY = 0;           // Dirección Y del empuje
+    public int velocidadEmpuje = 12;        // Velocidad durante el empuje
+
     // Propiedades para movimiento en arco y aleatorio
     public double anguloMovimiento = 0;
     public double velocidadAngular = 0;

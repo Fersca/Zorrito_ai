@@ -258,4 +258,253 @@ class MovimientoHandlerTest {
             assertTrue(presa.cazado);
         }
     }
+
+    @Nested
+    @DisplayName("Tests de aplicarMovimientoProyectil")
+    class MovimientoProyectilTests {
+
+        @Test
+        @DisplayName("Mueve el proyectil en la dirección especificada")
+        void mueveEnDireccion() {
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.x = 100;
+            proyectil.y = 100;
+            proyectil.direccionX = 1.0;  // Dirección hacia la derecha
+            proyectil.direccionY = 0.0;
+            proyectil.velocidadProyectil = 10;
+            proyectil.proyectilActivo = true;
+
+            MovimientoHandler.aplicarMovimientoProyectil(proyectil, 800, 600);
+
+            assertEquals(110, proyectil.x);
+            assertEquals(100, proyectil.y);
+        }
+
+        @Test
+        @DisplayName("Mueve el proyectil en diagonal")
+        void mueveEnDiagonal() {
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.x = 100;
+            proyectil.y = 100;
+            // Dirección normalizada 45 grados
+            proyectil.direccionX = 0.707;
+            proyectil.direccionY = 0.707;
+            proyectil.velocidadProyectil = 10;
+            proyectil.proyectilActivo = true;
+
+            MovimientoHandler.aplicarMovimientoProyectil(proyectil, 800, 600);
+
+            assertEquals(107, proyectil.x);
+            assertEquals(107, proyectil.y);
+        }
+
+        @Test
+        @DisplayName("No mueve si proyectil está inactivo")
+        void noMueveSiInactivo() {
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.x = 100;
+            proyectil.y = 100;
+            proyectil.direccionX = 1.0;
+            proyectil.direccionY = 0.0;
+            proyectil.velocidadProyectil = 10;
+            proyectil.proyectilActivo = false;
+
+            MovimientoHandler.aplicarMovimientoProyectil(proyectil, 800, 600);
+
+            assertEquals(100, proyectil.x);
+            assertEquals(100, proyectil.y);
+        }
+
+        @Test
+        @DisplayName("Desactiva proyectil al salir por la derecha")
+        void desactivaAlSalirPorDerecha() {
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.x = 900;
+            proyectil.direccionX = 1.0;
+            proyectil.direccionY = 0.0;
+            proyectil.velocidadProyectil = 10;
+            proyectil.proyectilActivo = true;
+
+            MovimientoHandler.aplicarMovimientoProyectil(proyectil, 800, 600);
+
+            assertFalse(proyectil.proyectilActivo);
+        }
+
+        @Test
+        @DisplayName("Desactiva proyectil al salir por la izquierda")
+        void desactivaAlSalirPorIzquierda() {
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.x = -100;
+            proyectil.direccionX = -1.0;
+            proyectil.direccionY = 0.0;
+            proyectil.velocidadProyectil = 10;
+            proyectil.proyectilActivo = true;
+
+            MovimientoHandler.aplicarMovimientoProyectil(proyectil, 800, 600);
+
+            assertFalse(proyectil.proyectilActivo);
+        }
+
+        @Test
+        @DisplayName("Desactiva proyectil al salir por arriba")
+        void desactivaAlSalirPorArriba() {
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.y = -100;
+            proyectil.direccionX = 0.0;
+            proyectil.direccionY = -1.0;
+            proyectil.velocidadProyectil = 10;
+            proyectil.proyectilActivo = true;
+
+            MovimientoHandler.aplicarMovimientoProyectil(proyectil, 800, 600);
+
+            assertFalse(proyectil.proyectilActivo);
+        }
+
+        @Test
+        @DisplayName("Desactiva proyectil al salir por abajo")
+        void desactivaAlSalirPorAbajo() {
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.y = 700;
+            proyectil.direccionX = 0.0;
+            proyectil.direccionY = 1.0;
+            proyectil.velocidadProyectil = 10;
+            proyectil.proyectilActivo = true;
+
+            MovimientoHandler.aplicarMovimientoProyectil(proyectil, 800, 600);
+
+            assertFalse(proyectil.proyectilActivo);
+        }
+
+        @Test
+        @DisplayName("Aplica rotación visual al proyectil")
+        void aplicaRotacion() {
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.x = 100;
+            proyectil.y = 100;
+            proyectil.angulo = 0;
+            proyectil.direccionX = 1.0;
+            proyectil.direccionY = 0.0;
+            proyectil.velocidadProyectil = 10;
+            proyectil.proyectilActivo = true;
+
+            MovimientoHandler.aplicarMovimientoProyectil(proyectil, 800, 600);
+
+            assertEquals(10, proyectil.angulo);
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests de aplicarRetrocesoAguila (activa estado empujado)")
+    class RetrocesoAguilaTests {
+
+        @Test
+        @DisplayName("Activa estado empujado en el águila")
+        void activaEstadoEmpujado() {
+            Character aguila = new Character("Aguila", "assets/bosque.png", 7, TipoMovimiento.CAZAR);
+            aguila.empujado = false;
+
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.direccionX = 1.0;
+            proyectil.direccionY = 0.0;
+
+            MovimientoHandler.aplicarRetrocesoAguila(aguila, proyectil, 15);
+
+            assertTrue(aguila.empujado);
+        }
+
+        @Test
+        @DisplayName("Guarda la dirección del proyectil como dirección de empuje")
+        void guardaDireccionEmpuje() {
+            Character aguila = new Character("Aguila", "assets/bosque.png", 7, TipoMovimiento.CAZAR);
+
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.direccionX = 0.8;
+            proyectil.direccionY = 0.6;
+
+            MovimientoHandler.aplicarRetrocesoAguila(aguila, proyectil, 15);
+
+            // La dirección de empuje debe ser la MISMA que el proyectil (lo empuja)
+            assertEquals(0.8, aguila.empujeDirX, 0.001);
+            assertEquals(0.6, aguila.empujeDirY, 0.001);
+        }
+
+        @Test
+        @DisplayName("Registra el tiempo de inicio del empuje")
+        void registraTiempoInicio() {
+            Character aguila = new Character("Aguila", "assets/bosque.png", 7, TipoMovimiento.CAZAR);
+
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.direccionX = 1.0;
+            proyectil.direccionY = 0.0;
+
+            long antes = System.currentTimeMillis();
+            MovimientoHandler.aplicarRetrocesoAguila(aguila, proyectil, 15);
+            long despues = System.currentTimeMillis();
+
+            assertTrue(aguila.tiempoInicioEmpuje >= antes);
+            assertTrue(aguila.tiempoInicioEmpuje <= despues);
+        }
+
+        @Test
+        @DisplayName("Configura la velocidad de empuje")
+        void configuraVelocidadEmpuje() {
+            Character aguila = new Character("Aguila", "assets/bosque.png", 7, TipoMovimiento.CAZAR);
+
+            Character proyectil = new Character("Piedra", "assets/bosque.png", 15, TipoMovimiento.PROYECTIL);
+            proyectil.direccionX = 1.0;
+            proyectil.direccionY = 0.0;
+
+            MovimientoHandler.aplicarRetrocesoAguila(aguila, proyectil, 20);
+
+            assertEquals(20, aguila.velocidadEmpuje);
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests de movimiento empujado en aplicarMovimientoCazar")
+    class MovimientoEmpujadoTests {
+
+        @Test
+        @DisplayName("Águila empujada se mueve en dirección del empuje")
+        void aguilaEmpujadaSeMueve() {
+            Character aguila = new Character("Aguila", "assets/bosque.png", 7, TipoMovimiento.CAZAR);
+            Character presa = new Character("Zorrito", "assets/bosque.png", 10, TipoMovimiento.NULO);
+            aguila.follow = presa;
+            aguila.x = 200;
+            aguila.y = 200;
+            aguila.empujado = true;
+            aguila.tiempoInicioEmpuje = System.currentTimeMillis();
+            aguila.empujeDirX = 1.0;  // Empujada hacia la derecha
+            aguila.empujeDirY = 0.0;
+            aguila.velocidadEmpuje = 10;
+
+            MovimientoHandler.aplicarMovimientoCazar(aguila);
+
+            // Debe moverse hacia la derecha (dirección del empuje)
+            assertEquals(210, aguila.x);
+            assertEquals(200, aguila.y);
+        }
+
+        @Test
+        @DisplayName("Águila empujada no persigue a la presa")
+        void aguilaEmpujadaNoPersigue() {
+            Character aguila = new Character("Aguila", "assets/bosque.png", 7, TipoMovimiento.CAZAR);
+            Character presa = new Character("Zorrito", "assets/bosque.png", 10, TipoMovimiento.NULO);
+            aguila.follow = presa;
+            aguila.x = 200;
+            aguila.y = 200;
+            presa.x = 100;  // Presa a la izquierda
+            presa.y = 200;
+            aguila.empujado = true;
+            aguila.tiempoInicioEmpuje = System.currentTimeMillis();
+            aguila.empujeDirX = 1.0;  // Empujada hacia la derecha (opuesto a la presa)
+            aguila.empujeDirY = 0.0;
+            aguila.velocidadEmpuje = 10;
+
+            MovimientoHandler.aplicarMovimientoCazar(aguila);
+
+            // Debe moverse hacia la derecha (empuje), no hacia la presa (izquierda)
+            assertTrue(aguila.x > 200);
+        }
+    }
 }

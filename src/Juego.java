@@ -60,6 +60,16 @@ public class Juego {
     // Lista de personajes del juego
     public ArrayList<Character> personajes = new ArrayList<Character>();
 
+    // Lista de proyectiles activos (piedras)
+    public ArrayList<Character> proyectiles = new ArrayList<Character>();
+
+    // Cooldown para disparo (evita disparar muy rápido)
+    private long ultimoDisparo = 0;
+    private final long COOLDOWN_DISPARO_MS = 500;
+
+    // Velocidad de empuje del águila cuando es impactada (píxeles por frame)
+    private final int VELOCIDAD_EMPUJE_AGUILA = 15;
+
     // Personaje principal (el zorro)
     public Character principal;
 
@@ -104,6 +114,9 @@ public class Juego {
                 break;
             case CAZAR:
                 MovimientoHandler.aplicarMovimientoCazar(c);
+                break;
+            case PROYECTIL:
+                MovimientoHandler.aplicarMovimientoProyectil(c, ancho, alto);
                 break;
         }
 
@@ -287,6 +300,9 @@ public class Juego {
                 }
 
                 principal.setColision(colisionPrincipal);
+
+                // Verifica colisiones entre proyectiles y águilas
+                verificarColisionesProyectiles();
 
                 // Verifica condiciones de fin del juego
                 long tiempoTranscurrido = System.currentTimeMillis() - initTimeMillis;
@@ -533,11 +549,125 @@ public class Juego {
     private void resetJuego() {
         terminado = 0;
         personajes.clear();
+        proyectiles.clear();
         crearPersonajes();
 
         // Cancela el timer actual y crea uno nuevo
         timer.cancel();
         timer = new Timer();
         timer.scheduleAtFixedRate(comienzaJuego(timer), 0, delay);
+    }
+
+    /**
+     * Dispara un proyectil (piedra) hacia el águila más cercana.
+     * El proyectil se mueve en línea recta hacia la posición actual del águila.
+     */
+    public void disparar() {
+        // Verifica cooldown para evitar disparar muy rápido
+        long tiempoActual = System.currentTimeMillis();
+        if (tiempoActual - ultimoDisparo < COOLDOWN_DISPARO_MS) {
+            return;
+        }
+        ultimoDisparo = tiempoActual;
+
+        // Busca el águila más cercana al zorrito
+        Character aguilaCercana = buscarAguilaMasCercana();
+        if (aguilaCercana == null) {
+            return;
+        }
+
+        // Crea el proyectil en la posición del zorrito (scale 2 = piedra grande y visible)
+        Character piedra = new Character("Piedra", "assets/piedra.png", 2, TipoMovimiento.PROYECTIL);
+        piedra.x = principal.centroX;
+        piedra.y = principal.centroY;
+        piedra.esProyectil = true;
+        piedra.proyectilActivo = true;
+        piedra.colisiona = false;
+
+        // Calcula la dirección hacia el águila
+        double deltaX = aguilaCercana.centroX - principal.centroX;
+        double deltaY = aguilaCercana.centroY - principal.centroY;
+        double distancia = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        // Normaliza la dirección
+        if (distancia > 0) {
+            piedra.direccionX = deltaX / distancia;
+            piedra.direccionY = deltaY / distancia;
+        }
+
+        // Agrega el proyectil a las listas
+        proyectiles.add(piedra);
+        personajes.add(piedra);
+    }
+
+    /**
+     * Busca el águila más cercana al zorrito principal.
+     *
+     * @return El personaje águila más cercana o null si no hay águilas
+     */
+    private Character buscarAguilaMasCercana() {
+        Character aguilaCercana = null;
+        double distanciaMinima = Double.MAX_VALUE;
+
+        // Itera sobre los personajes buscando águilas
+        for (Character c : personajes) {
+            // Las águilas tienen follow != null (siguen al zorrito)
+            if (c.follow != null) {
+                double deltaX = c.centroX - principal.centroX;
+                double deltaY = c.centroY - principal.centroY;
+                double distancia = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+                // Actualiza si es la más cercana
+                if (distancia < distanciaMinima) {
+                    distanciaMinima = distancia;
+                    aguilaCercana = c;
+                }
+            }
+        }
+
+        return aguilaCercana;
+    }
+
+    /**
+     * Verifica colisiones entre proyectiles y águilas.
+     * Si hay impacto, el águila retrocede y el proyectil se desactiva.
+     */
+    public void verificarColisionesProyectiles() {
+        // Lista para proyectiles a remover
+        ArrayList<Character> proyectilesARemover = new ArrayList<Character>();
+
+        // Itera sobre cada proyectil activo
+        for (Character proyectil : proyectiles) {
+            if (!proyectil.proyectilActivo) {
+                proyectilesARemover.add(proyectil);
+                continue;
+            }
+
+            // Verifica colisión con cada águila
+            for (Character c : personajes) {
+                // Las águilas tienen follow != null
+                if (c.follow != null) {
+                    // Calcula la distancia entre proyectil y águila
+                    boolean colision = CollisionUtils.verificaColisionCircular(
+                        proyectil.centroX, proyectil.centroY, proyectil.radio,
+                        c.centroX, c.centroY, c.radio
+                    );
+
+                    // Si hay colisión, activa empuje y desactiva proyectil
+                    if (colision) {
+                        MovimientoHandler.aplicarRetrocesoAguila(c, proyectil, VELOCIDAD_EMPUJE_AGUILA);
+                        proyectil.proyectilActivo = false;
+                        proyectilesARemover.add(proyectil);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Remueve los proyectiles inactivos de las listas
+        for (Character p : proyectilesARemover) {
+            proyectiles.remove(p);
+            personajes.remove(p);
+        }
     }
 }

@@ -121,6 +121,8 @@ if [ -f "$COVERAGE_DIR/jacoco.exec" ]; then
         --classfiles "$BUILD_DIR/MovementUtils\$DireccionResultado.class" \
         --classfiles "$BUILD_DIR/SpriteUtils.class" \
         --classfiles "$BUILD_DIR/SpriteUtils\$SpriteRegion.class" \
+        --classfiles "$BUILD_DIR/GeneradorImagenes.class" \
+        --classfiles "$BUILD_DIR/MovimientoHandler.class" \
         --sourcefiles "$PROJECT_DIR/src" \
         --csv "$COVERAGE_DIR/coverage.csv" \
         2>/dev/null
@@ -132,6 +134,8 @@ if [ -f "$COVERAGE_DIR/jacoco.exec" ]; then
         --classfiles "$BUILD_DIR/MovementUtils\$DireccionResultado.class" \
         --classfiles "$BUILD_DIR/SpriteUtils.class" \
         --classfiles "$BUILD_DIR/SpriteUtils\$SpriteRegion.class" \
+        --classfiles "$BUILD_DIR/GeneradorImagenes.class" \
+        --classfiles "$BUILD_DIR/MovimientoHandler.class" \
         --sourcefiles "$PROJECT_DIR/src" \
         --html "$COVERAGE_DIR/html" \
         2>/dev/null
@@ -157,7 +161,7 @@ if [ -f "$COVERAGE_DIR/jacoco.exec" ]; then
         # Saltar la cabecera y procesar cada línea
         while IFS=',' read -r group package class instr_missed instr_covered branch_missed branch_covered line_missed line_covered complexity_missed complexity_covered method_missed method_covered; do
             # Solo mostrar las clases Utils principales (no inner classes)
-            if [[ "$class" == "CollisionUtils" || "$class" == "MovementUtils" || "$class" == "SpriteUtils" ]]; then
+            if [[ "$class" == "CollisionUtils" || "$class" == "MovementUtils" || "$class" == "SpriteUtils" || "$class" == "GeneradorImagenes" || "$class" == "MovimientoHandler" ]]; then
                 # Acumular totales
                 TOTAL_LINE_MISSED=$((TOTAL_LINE_MISSED + line_missed))
                 TOTAL_LINE_COVERED=$((TOTAL_LINE_COVERED + line_covered))

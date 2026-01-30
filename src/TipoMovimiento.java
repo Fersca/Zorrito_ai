@@ -7,5 +7,6 @@ public enum TipoMovimiento {
     REBOTE,     // Rebota en los bordes (pájaros)
     ARCO,       // Se mueve en curvas suaves
     ALEATORIO,  // Movimiento aleatorio con cambios de dirección
-    CAZAR       // Persigue a otro personaje (águilas)
+    CAZAR,      // Persigue a otro personaje (águilas)
+    PROYECTIL   // Se mueve en línea recta hacia un objetivo (piedras)
 }

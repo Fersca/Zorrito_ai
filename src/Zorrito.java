@@ -52,6 +52,10 @@ public class Zorrito {
     public static void main(String[] args) {
         // Configura escala de UI para evitar problemas de resolución
         System.setProperty("sun.java2d.uiScale", "1");
+
+        // Genera imágenes faltantes (como la piedra para disparar)
+        GeneradorImagenes.generarImagenesFaltantes();
+
         System.out.println("Inicia Zorrito 1.0");
         System.out.println("------------------");
         System.out.println("");
@@ -64,6 +68,14 @@ public class Zorrito {
             -aguilas    : Indica la cantidad de enemigos. Ej: -aguilas:10
             -no-centrar : No centra al personaje en la pantalla
             -sin-fondo  : El juego se da sobre la pantalla actual
+
+            Controles:
+            - I/J/K/L   : Movimiento del zorrito
+            - Mouse     : El zorrito sigue al cursor
+            - Click     : Dispara piedra hacia el aguila mas cercana
+            - Z/X       : Zoom +/-
+            - E         : Reiniciar juego
+            - Q         : Salir
 
             """;
             System.out.println(ayuda);

@@ -192,8 +192,12 @@ public class MovimientoHandler {
         c.angulo = c.angulo + c.rotaAngulo;
     }
 
+    // Duración del empuje en milisegundos (1.5 segundos)
+    private static final long DURACION_EMPUJE_MS = 1500;
+
     /**
      * Movimiento de caza: el personaje persigue a otro.
+     * Si está empujado, se mueve en la dirección del empuje durante 1.5 segundos.
      * Usado por las águilas para perseguir al zorro.
      *
      * @param c El personaje cazador
@@ -203,6 +207,23 @@ public class MovimientoHandler {
         if (c.colisionado) {
             c.follow.cazado = true;
             return;
+        }
+
+        // Verifica si está en estado "empujado" por una piedra
+        if (c.empujado) {
+            long tiempoActual = System.currentTimeMillis();
+            long tiempoTranscurrido = tiempoActual - c.tiempoInicioEmpuje;
+
+            // Si pasó el tiempo de empuje, vuelve al comportamiento normal
+            if (tiempoTranscurrido >= DURACION_EMPUJE_MS) {
+                c.empujado = false;
+            } else {
+                // Continúa moviéndose en dirección del empuje (misma dir que la piedra)
+                c.x += (int) (c.empujeDirX * c.velocidadEmpuje);
+                c.y += (int) (c.empujeDirY * c.velocidadEmpuje);
+                c.angulo = c.angulo + 8; // Gira mientras es empujada
+                return;
+            }
         }
 
         // Obtiene las posiciones de presa y cazador
@@ -227,5 +248,54 @@ public class MovimientoHandler {
 
         // Aplica rotación visual
         c.angulo = c.angulo + c.rotaAngulo;
+    }
+
+    /**
+     * Movimiento de proyectil: se mueve en línea recta hacia un objetivo.
+     * Usado por las piedras que dispara el zorro.
+     *
+     * @param c El proyectil a mover
+     * @param anchoDisplay Ancho de la pantalla
+     * @param altoDisplay Alto de la pantalla
+     */
+    public static void aplicarMovimientoProyectil(Character c, int anchoDisplay, int altoDisplay) {
+        // Si el proyectil ya no está activo, no hace nada
+        if (!c.proyectilActivo) {
+            return;
+        }
+
+        // Avanza en la dirección calculada al momento del disparo
+        c.x += (int) (c.direccionX * c.velocidadProyectil);
+        c.y += (int) (c.direccionY * c.velocidadProyectil);
+
+        // Verifica si salió de la pantalla para desactivarlo
+        if (c.x < -50 || c.x > anchoDisplay + 50 ||
+            c.y < -50 || c.y > altoDisplay + 50) {
+            c.proyectilActivo = false;
+        }
+
+        // Aplica rotación visual para efecto de giro de piedra
+        c.angulo = c.angulo + 10;
+    }
+
+    /**
+     * Activa el estado "empujado" en un águila cuando es impactada por un proyectil.
+     * El águila se moverá en la misma dirección del proyectil durante 1.5 segundos.
+     *
+     * @param aguila El águila a empujar
+     * @param proyectil El proyectil que impactó
+     * @param velocidadEmpuje Velocidad del empuje (no se usa, se usa la del águila)
+     */
+    public static void aplicarRetrocesoAguila(Character aguila, Character proyectil, int velocidadEmpuje) {
+        // Activa el estado empujado
+        aguila.empujado = true;
+        aguila.tiempoInicioEmpuje = System.currentTimeMillis();
+
+        // La dirección del empuje es la MISMA que llevaba el proyectil (lo empuja)
+        aguila.empujeDirX = proyectil.direccionX;
+        aguila.empujeDirY = proyectil.direccionY;
+
+        // Configura velocidad del empuje (más rápido que la velocidad normal)
+        aguila.velocidadEmpuje = velocidadEmpuje;
     }
 }
