@@ -30,6 +30,9 @@ JACOCO_CLI_JAR="org.jacoco.cli-${JACOCO_VERSION}-nodeps.jar"
 JACOCO_AGENT_URL="https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/${JACOCO_VERSION}/org.jacoco.agent-${JACOCO_VERSION}-runtime.jar"
 JACOCO_CLI_URL="https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/${JACOCO_VERSION}/org.jacoco.cli-${JACOCO_VERSION}-nodeps.jar"
 
+# Fuerza modo headless para evitar crashes de AWT en entornos sin display
+JAVA_TEST_OPTS="${JAVA_TEST_OPTS:--Djava.awt.headless=true}"
+
 echo -e "${YELLOW}=== Zorrito Test Runner ===${NC}"
 echo ""
 
@@ -93,8 +96,9 @@ rm -f "$COVERAGE_DIR/jacoco.exec"
 
 # Ejecutar los tests con JaCoCo agent
 # Usamos output-mode=none para suprimir el output de errores de JaCoCo
-java -javaagent:"$LIB_DIR/$JACOCO_AGENT_JAR"=destfile="$COVERAGE_DIR/jacoco.exec",output=file \
+java $JAVA_TEST_OPTS -javaagent:"$LIB_DIR/$JACOCO_AGENT_JAR"=destfile="$COVERAGE_DIR/jacoco.exec",output=file \
     -jar "$LIB_DIR/$JUNIT_JAR" \
+    execute \
     --class-path "$BUILD_DIR" \
     --scan-class-path \
     --details=tree 2>/dev/null
@@ -109,8 +113,8 @@ else
     echo -e "${RED}=== Algunos tests fallaron ===${NC}"
 fi
 
-# Generar reporte de coverage si existe el archivo exec
-if [ -f "$COVERAGE_DIR/jacoco.exec" ]; then
+# Generar reporte de coverage solo si los tests pasaron y existe el archivo exec
+if [ $TEST_EXIT_CODE -eq 0 ] && [ -s "$COVERAGE_DIR/jacoco.exec" ]; then
     echo ""
     echo -e "${YELLOW}Generando reporte de coverage...${NC}"
 

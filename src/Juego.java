@@ -175,20 +175,19 @@ public class Juego {
         bosque.esFondoInfinito = !sinFondo;
         personajesCreados.add(bosque);
 
-        // Crea el águila principal con movimiento de caza
-        Character aguila = new Character("Aguila", "assets/aguila.png", 7, TipoMovimiento.CAZAR);
-        aguila.x = display.getWidth();
-        aguila.y = 0;
-        aguila.velocidadX = 2;
-        aguila.velocidadY = 2;
-        aguila.follow = zorrito;
-
-        // Crea águilas adicionales con movimiento de caza
+        // Crea águilas con movimiento de caza
         Random random = new Random();
-        for (int i = 0; i < cantidadAguilas; i++){
-            Character enemy = new Character("Aguila" + i, "assets/aguila.png", 7, TipoMovimiento.CAZAR);
-            enemy.x = random.nextInt(display.getWidth());
-            enemy.y = random.nextInt(display.getHeight());
+        int totalAguilas = Math.max(0, cantidadAguilas);
+        for (int i = 0; i < totalAguilas; i++){
+            String nombreAguila = (i == 0) ? "Aguila" : "Aguila" + i;
+            Character enemy = new Character(nombreAguila, "assets/aguila.png", 7, TipoMovimiento.CAZAR);
+            if (i == 0) {
+                enemy.x = display.getWidth();
+                enemy.y = 0;
+            } else {
+                enemy.x = random.nextInt(display.getWidth());
+                enemy.y = random.nextInt(display.getHeight());
+            }
             enemy.velocidadX = 2;
             enemy.velocidadY = 2;
             enemy.follow = zorrito;
@@ -196,7 +195,6 @@ public class Juego {
         }
 
         personajesCreados.add(zorrito);
-        personajesCreados.add(aguila);
 
         // Crea los pájaros enemigos con diferentes tipos de movimiento
         for (Character p : crearEnemigos()) {

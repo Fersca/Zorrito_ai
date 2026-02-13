@@ -85,7 +85,7 @@ public class Zorrito {
         // Valores por defecto
         boolean conBuffer = true;
         int size = 20;
-        int aguilas = 0;
+        int aguilas = 1;
         boolean centrar = true;
         boolean sinFondo = false;
 
@@ -115,7 +115,7 @@ public class Zorrito {
         }
 
         // Crea la instancia del juego
-        new Zorrito(conBuffer, size, centrar, sinFondo, aguilas - 1);
+        new Zorrito(conBuffer, size, centrar, sinFondo, aguilas);
     }
 
     /**

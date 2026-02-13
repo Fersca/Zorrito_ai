@@ -13,7 +13,7 @@ echo -e "${YELLOW}=== Zorrito Game Runner ===${NC}"
 echo ""
 
 # Directorio de clases compiladas
-BUILD_DIR="./Compilado/clases"
+BUILD_DIR="./Compilado/classes"
 mkdir -p "$BUILD_DIR"
 
 # Compila el código fuente
